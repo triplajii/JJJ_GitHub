@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a6dc0704-8e87-4dc9-99b0-b61de3130f71" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:44339/Task.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Task.xsd" MetadataType="Schema" ID="c16692e1-96b0-42ea-8547-d0a0f768c113" SourceId="1" SourceUrl="http://localhost:44339/Task.svc?xsd=xsd1" />
+    <MetadataFile FileName="Task.wsdl" MetadataType="Wsdl" ID="69a8c7c5-ead4-459d-9386-a71d1a9c8402" SourceId="1" SourceUrl="http://localhost:44339/Task.svc?wsdl" />
+    <MetadataFile FileName="Task2.xsd" MetadataType="Schema" ID="d2e01037-aa42-4e9e-9326-a77fa07319f3" SourceId="1" SourceUrl="http://localhost:44339/Task.svc?xsd=xsd2" />
+    <MetadataFile FileName="Task1.xsd" MetadataType="Schema" ID="5eba5746-81b8-4d73-9b6a-323d369743d2" SourceId="1" SourceUrl="http://localhost:44339/Task.svc?xsd=xsd0" />
+    <MetadataFile FileName="Task.disco" MetadataType="Disco" ID="f38bc6fa-b2ae-451e-896f-035fcc9cf3a5" SourceId="1" SourceUrl="http://localhost:44339/Task.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
