@@ -16,13 +16,18 @@ namespace TaskService
         [OperationContract]
         Task<string> AddTaskAsync(string task);
 
-        //[OperationContract]
-        //List<TaskService.Task.TodoTask> GetAllTasks();
+        [OperationContract]
+        Task<string> AddAppointmentAsync(string title, DateTime date, string time);
 
         [OperationContract]
         Task<List<TaskService.Task.TodoTask>> GetAllTasksAsync();
 
         [OperationContract]
         System.Threading.Tasks.Task DeleteTaskAsync(string guid);
+
+        [OperationContract]
+        Task<int> GetTaskCount();
+
+
     }
 }

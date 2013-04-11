@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -19,6 +20,8 @@ namespace TaskService
 
         public Task()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("fi-FI");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("fi-FI");
             try
             {
                 DirectoryInfo di = new DirectoryInfo(path);
@@ -28,7 +31,7 @@ namespace TaskService
                     string file = Guid.NewGuid().ToString() + ".txt";
                     using (StreamWriter sw = new StreamWriter(path + file, false))
                     {
-                        sw.Write("Task 1");
+                        sw.Write("Test task 1");
                     }
                 }
             }
@@ -47,7 +50,8 @@ namespace TaskService
                 string file = Guid.NewGuid().ToString() + ".txt";
                 using (StreamWriter sw = new StreamWriter(path + file, false))
                 { 
-                    await sw.WriteAsync(task);
+                    await sw.WriteLineAsync(task);
+                    await sw.FlushAsync();
                     result = "";
                 }
             }
@@ -58,18 +62,39 @@ namespace TaskService
             return result;
         }
 
-
-        public List<TodoTask> GetAllTasks()
+        public async Task<string> AddAppointmentAsync(string title, DateTime date, string time)
         {
+            string result = "kesken";
             try
             {
-                return ReadFiles();
+                string file = Guid.NewGuid().ToString() + ".dat";
+                using (StreamWriter sw = new StreamWriter(path + file, false))
+                {
+                    await sw.WriteLineAsync(title);
+                    await sw.WriteLineAsync(TimeToString(date));
+                    await sw.WriteLineAsync(time);
+                    await sw.FlushAsync();
+                    result = "";
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("GetAllTasks()", ex);
+                throw new Exception("AddAppointmentAsync(" + title + "," + date + "," + time + ")", ex);
             }
+            return result;
         }
+
+        //public List<TodoTask> GetAllTasks()
+        //{
+        //    try
+        //    {
+        //        return ReadFiles();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("GetAllTasks()", ex);
+        //    }
+        //}
 
         public async Task<List<TodoTask>> GetAllTasksAsync()
         {
@@ -87,7 +112,7 @@ namespace TaskService
         {
             try
             {
-                await System.Threading.Tasks.Task.Factory.StartNew(() => DeleteFile(path + guid + ".txt"));
+                await System.Threading.Tasks.Task.Factory.StartNew(() => DeleteFile(path + guid));
             }
             catch (Exception ex)
             {
@@ -95,11 +120,20 @@ namespace TaskService
             }
         }
 
+        public async Task<int> GetTaskCount()
+        {
+            return await System.Threading.Tasks.Task.Factory.StartNew(() => ReadFileCount());
+        }
+
+
         private void DeleteFile(string file)
         {
             try
             {
-                File.Delete(file);
+                if ( File.Exists(file + ".txt") )
+                    File.Delete(file + ".txt");
+                else if (File.Exists(file + ".dat"))
+                    File.Delete(file + ".dat");
             }
             catch (Exception ex)
             {
@@ -114,22 +148,44 @@ namespace TaskService
             try
             {
                 DirectoryInfo di = new DirectoryInfo(path);
-                FileInfo[] files = di.GetFiles("*.txt");
+                FileInfo[] files = di.GetFiles("*.*");
                 foreach (FileInfo file in files)
                 {
                     using (StreamReader sr = new StreamReader(path + file.Name))
                     {
-                        result.Add(new TodoTask
+                        TodoTask task = new TodoTask
                         {
                             guid = file.Name.Split('.')[0],
-                            task = sr.ReadToEnd()
-                        });
+                            task = sr.ReadLine()
+                        };
+                        if (file.Extension == ".dat")
+                        {
+                            task.date = StringToDate(sr.ReadLine());
+                            task.time = sr.ReadLine();
+                        }
+                        result.Add(task);
                     }
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("ReadFiles()", ex);
+            }
+            return result;
+        }
+
+        private int ReadFileCount()
+        {
+            int result = 0;
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(path);
+                FileInfo[] files = di.GetFiles("*.*");
+                result = files.Count();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ReadFileCount()", ex);
             }
             return result;
         }
@@ -141,8 +197,42 @@ namespace TaskService
             public string guid { get; set; }
             [DataMember]
             public string task { get; set; }
+            [DataMember]
+            public DateTime? date { get; set; }
+            [DataMember]
+            public string time { get; set; }
         }
 
+
+
+
+
+        private string TimeToString(DateTime time)
+        {
+            try
+            {
+                return time.Year.ToString() + time.Month.ToString().PadLeft(2, '0') + time.Day.ToString().PadLeft(2, '0');
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("TimeToString(" + time + ")", ex);
+            }
+        }
+
+        private DateTime StringToDate(string date)
+        {
+            try
+            {
+                return new DateTime(
+                    int.Parse(date.Substring(0, 4)),
+                    int.Parse(date.Substring(4, 2)),
+                    int.Parse(date.Substring(6, 2)));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("StringToDate(" + date + ")", ex);
+            }
+        }
     }
 
 }
