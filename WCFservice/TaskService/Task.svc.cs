@@ -164,7 +164,7 @@ namespace TaskService
                         {
                             task.date = StringToDate(sr.ReadLine());
                             task.time = sr.ReadLine();
-                            task.info += System.Environment.NewLine + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Substring(0, 5) + ")";
+                            task.info += System.Environment.NewLine + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Replace(" ", "") + ")";
                         }                        
                         result.Add(task);
                     }
