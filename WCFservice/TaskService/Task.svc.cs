@@ -162,7 +162,10 @@ namespace TaskService
                         {
                             task.date = StringToDate(sr.ReadLine());
                             task.time = sr.ReadLine();
+                            task.info = task.task + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Substring(0, 5);
                         }
+                        else
+                            task.info = task.task;
                         result.Add(task);
                     }
                 }
@@ -201,6 +204,8 @@ namespace TaskService
             public DateTime? date { get; set; }
             [DataMember]
             public string time { get; set; }
+            [DataMember]
+            public string info { get; set; }
         }
 
 
