@@ -157,15 +157,15 @@ namespace TaskService
                         {
                             guid = file.Name.Split('.')[0],
                             task = sr.ReadLine()
+                            
                         };
+                        task.info = task.task;
                         if (file.Extension == ".dat")
                         {
                             task.date = StringToDate(sr.ReadLine());
                             task.time = sr.ReadLine();
-                            task.info = task.task + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Substring(0, 5);
-                        }
-                        else
-                            task.info = task.task;
+                            task.info += System.Environment.NewLine + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Substring(0, 5) + ")";
+                        }                        
                         result.Add(task);
                     }
                 }
