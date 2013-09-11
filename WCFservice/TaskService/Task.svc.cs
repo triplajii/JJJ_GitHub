@@ -6,39 +6,40 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace TaskService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Task" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select Task.svc or Task.svc.cs at the Solution Explorer and start debugging.
-    public class Task : ITask
+
+    public class Task : TaskBase, ITask
     {
-        string path = AppDomain.CurrentDomain.BaseDirectory + @"\App_Data\";
+        //string path = AppDomain.CurrentDomain.BaseDirectory + @"\App_Data\";
 
         public Task()
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("fi-FI");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("fi-FI");
-            try
-            {
-                DirectoryInfo di = new DirectoryInfo(path);
-                if (!di.Exists)
-                {
-                    di.Create();
-                    string file = Guid.NewGuid().ToString() + ".txt";
-                    using (StreamWriter sw = new StreamWriter(path + file, false))
-                    {
-                        sw.Write("Test task 1");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Task()", ex);
-            }
+            Init();
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("fi-FI");
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo("fi-FI");
+            //try
+            //{
+            //    DirectoryInfo di = new DirectoryInfo(path);
+            //    if (!di.Exists)
+            //    {
+            //        di.Create();
+            //        string file = Guid.NewGuid().ToString() + ".txt";
+            //        using (StreamWriter sw = new StreamWriter(path + file, false))
+            //        {
+            //            sw.Write("Test task 1");
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception("Task()", ex);
+            //}
 
         }
 
@@ -84,17 +85,6 @@ namespace TaskService
             return result;
         }
 
-        //public List<TodoTask> GetAllTasks()
-        //{
-        //    try
-        //    {
-        //        return ReadFiles();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("GetAllTasks()", ex);
-        //    }
-        //}
 
         public async Task<List<TodoTask>> GetAllTasksAsync()
         {
@@ -126,72 +116,6 @@ namespace TaskService
         }
 
 
-        private void DeleteFile(string file)
-        {
-            try
-            {
-                if ( File.Exists(file + ".txt") )
-                    File.Delete(file + ".txt");
-                else if (File.Exists(file + ".dat"))
-                    File.Delete(file + ".dat");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("DeleteFile(" + file + ")", ex);
-            }
-        }
-
-
-        private List<TodoTask> ReadFiles()
-        {
-            List<TodoTask> result = new List<TodoTask>();
-            try
-            {
-                DirectoryInfo di = new DirectoryInfo(path);
-                FileInfo[] files = di.GetFiles("*.*");
-                foreach (FileInfo file in files)
-                {
-                    using (StreamReader sr = new StreamReader(path + file.Name))
-                    {
-                        TodoTask task = new TodoTask
-                        {
-                            guid = file.Name.Split('.')[0],
-                            task = sr.ReadLine()
-                            
-                        };
-                        task.info = task.task;
-                        if (file.Extension == ".dat")
-                        {
-                            task.date = StringToDate(sr.ReadLine());
-                            task.time = sr.ReadLine();
-                            task.info += System.Environment.NewLine + "(" + task.date.Value.Day.ToString() + "." + task.date.Value.Month.ToString() + ". " + task.time.Replace(" ", "") + ")";
-                        }                        
-                        result.Add(task);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ReadFiles()", ex);
-            }
-            return result;
-        }
-
-        private int ReadFileCount()
-        {
-            int result = 0;
-            try
-            {
-                DirectoryInfo di = new DirectoryInfo(path);
-                FileInfo[] files = di.GetFiles("*.*");
-                result = files.Count();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ReadFileCount()", ex);
-            }
-            return result;
-        }
 
         [DataContract]
         public class TodoTask
@@ -203,41 +127,17 @@ namespace TaskService
             [DataMember]
             public DateTime? date { get; set; }
             [DataMember]
-            public string time { get; set; }
+            public string datestring { get; set; }
             [DataMember]
-            public string info { get; set; }
+            public string time { get; set; }
         }
 
 
 
 
 
-        private string TimeToString(DateTime time)
-        {
-            try
-            {
-                return time.Year.ToString() + time.Month.ToString().PadLeft(2, '0') + time.Day.ToString().PadLeft(2, '0');
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("TimeToString(" + time + ")", ex);
-            }
-        }
 
-        private DateTime StringToDate(string date)
-        {
-            try
-            {
-                return new DateTime(
-                    int.Parse(date.Substring(0, 4)),
-                    int.Parse(date.Substring(4, 2)),
-                    int.Parse(date.Substring(6, 2)));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("StringToDate(" + date + ")", ex);
-            }
-        }
+
     }
 
 }

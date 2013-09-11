@@ -11,8 +11,7 @@ namespace TaskService
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "ITask" in both code and config file together.
     [ServiceContract]
     public interface ITask
-    {
-        
+    {        
         [OperationContract]
         Task<string> AddTaskAsync(string task);
 
@@ -27,7 +26,5 @@ namespace TaskService
 
         [OperationContract]
         Task<int> GetTaskCount();
-
-
     }
 }

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>JJJ's tasks</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+</head>
+<body>
+
+<!--    <section>        
+        <select name="all" id="all" data-role="slider">
+            <option value="off">Active</option>
+            <option value="on">All</option>
+        </select>
+    </section>-->
+    <div id="status">Wait...</div>
+    <br />
+    <section id="items">
+
+    </section>
+</body>
+
+<script>
+    var result = "";
+    //window.setInterval(GetServiceData, 10000);
+
+    function GetServiceData() {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: "{}",
+            url: "TaskAjax.svc/GetAllTasks",
+            success: function (data) {
+                result = data.d;
+                if (result.length > 0) {
+                    $('#status').text('');
+                }
+                else {
+                    $('#status').text('No tasks!');
+                }
+                for (var i = 0; i < result.length; i++) {
+                    var time = '';
+                    if (result[i].datestring != null) {
+                        time = ' ' + result[i].datestring + ' ' + result[i].time;
+                    }
+                    $('#items').append('<div class="item" id="' + result[i].guid + '">' + result[i].task + time + '</div>');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            },
+            beforeSend: startingAjax,
+            complete: ajaxCompleted,
+            cache: false,
+            async: true
+        });
+        //alert('hep1');
+    }
+    function startingAjax() {
+    }
+
+    function ajaxCompleted() {
+    }
+
+    $(document).ready(function () {
+        GetServiceData();
+        //$('#OthersEdit').dialog({
+        //    autoOpen: false,
+        //    draggable: true,
+        //    title: "Edit Person Details",
+        //    open: function (type, data) {
+        //        $(this).parent().appendTo("form");
+        //    }
+        //});
+        //$('#btnEdit').click(function () {
+        //    $('#OthersEdit').dialog("open");
+        //});
+        //$('#btnSave').click(function () {
+        //    $('#Fname').html($("[id$=TextBox1]").val() + '');
+        //    $('#Lname').html($("[id$=TextBox2]").val() + '');
+        //    $('#email').html($("[id$=TextBox3]").val() + '');
+        //    $('#OthersEdit').dialog("close");
+        //});
+    });</script>
+</html>
