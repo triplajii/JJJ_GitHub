@@ -2,30 +2,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>JJJ's tasks</title>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script> 
+    <script type="text/javascript" src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+    <script type="text/javascript" src="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.js"></script>
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/simpledialog/latest/jquery.mobile.simpledialog.min.css" /> 
+    <link href="css/styles.css" rel="stylesheet" />
 </head>
 <body>
 
-<!--    <section>        
-        <select name="all" id="all" data-role="slider">
-            <option value="off">Active</option>
-            <option value="on">All</option>
-        </select>
-    </section>-->
-    <div id="status">Wait...</div>
+    <div style="font-size:50px" id="status"></div>
     <br />
-    <section id="items">
 
+    <section id="items">
     </section>
+
+
+    <input type="text" id="newtask" style="font-size:50px;width:100%" name="newtask" />
+    <button id="save" name="save">Save</button>
+
+
 </body>
 
 <script>
     var result = "";
     //window.setInterval(GetServiceData, 10000);
 
-    function GetServiceData() {
+    function GetAllTasks() {
+        $('#status').text('Wait...');
+        $('.item').remove();
         $.ajax({
             type: "POST",
             contentType: "application/json",
@@ -47,6 +55,30 @@
                     }
                     $('#items').append('<div class="item" id="' + result[i].guid + '">' + result[i].task + time + '</div>');
                 }
+
+                $('.item').click(function () {
+                    var guid = $(this).attr('id');
+                    $(this).simpledialog({
+                        'mode': 'bool',
+                        'prompt': 'Delete?',
+                        'useModal': true,
+                        'buttons': {
+                            'OK': {
+                                click: function () {
+                                    DeleteTask(guid);
+                                }
+                            },
+                            'Cancel': {
+                                click: function () {                                    
+                                },
+                                icon: "delete",
+                                theme: "c"
+                            }
+                            
+                        }
+                        
+                    })                    
+                });
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 alert(errorThrown);
@@ -56,8 +88,51 @@
             cache: false,
             async: true
         });
-        //alert('hep1');
     }
+
+    function DeleteTask(guid) {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: '{"guid": "' + guid + '"}',
+            url: "TaskAjax.svc/DeleteTask",
+            success: function (data) {
+                result = data.d;
+                GetAllTasks();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            },
+            beforeSend: startingAjax,
+            complete: ajaxCompleted,
+            cache: false,
+            async: true
+        });
+    }
+
+    function AddTask(task) {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: '{"task": "' + task + '"}',
+            url: "TaskAjax.svc/AddTask",
+            success: function (data) {
+                result = data.d;
+                $('#newtask').val('')
+                GetAllTasks();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            },
+            beforeSend: startingAjax,
+            complete: ajaxCompleted,
+            cache: false,
+            async: true
+        });
+    }
+
     function startingAjax() {
     }
 
@@ -65,23 +140,12 @@
     }
 
     $(document).ready(function () {
-        GetServiceData();
-        //$('#OthersEdit').dialog({
-        //    autoOpen: false,
-        //    draggable: true,
-        //    title: "Edit Person Details",
-        //    open: function (type, data) {
-        //        $(this).parent().appendTo("form");
-        //    }
-        //});
-        //$('#btnEdit').click(function () {
-        //    $('#OthersEdit').dialog("open");
-        //});
-        //$('#btnSave').click(function () {
-        //    $('#Fname').html($("[id$=TextBox1]").val() + '');
-        //    $('#Lname').html($("[id$=TextBox2]").val() + '');
-        //    $('#email').html($("[id$=TextBox3]").val() + '');
-        //    $('#OthersEdit').dialog("close");
-        //});
+        $('#save').click(function () {
+            var task = $('#newtask').val();
+            if ( task.length > 0 )
+                AddTask(task);
+        });
+
+        GetAllTasks();
     });</script>
 </html>

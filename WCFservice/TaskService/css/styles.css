@@ -1,0 +1,23 @@
+﻿body {
+}
+
+
+.item {
+        border:10px solid white;
+}
+@media screen and (max-width: 800px) {
+	.item {
+		font-size: 50px;
+	}
+}
+
+/* min-width */
+@media screen and (min-width: 800px) {
+	.item {
+		font-size: 20px;
+	}
+    .newtask {       
+        height:50px;         		
+	}
+}
+

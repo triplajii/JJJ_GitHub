@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -39,7 +40,43 @@ namespace TaskService
             }
         }
 
+        [OperationContract]
+        public string AddTask(string task)
+        {
+            string result = "kesken";
+            try
+            {
+                string file = Guid.NewGuid().ToString() + ".txt";
+                using (StreamWriter sw = new StreamWriter(path + file, false))
+                {
+                    sw.WriteLine(task);
+                    sw.Flush();
+                    result = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("AddTask(" + task + ")", ex);
+            }
+            return result;
+        }
 
-        // Add more operations here and mark them with [OperationContract]
+
+        [OperationContract]
+        public bool DeleteTask(string guid)
+        {
+            bool result = false;
+            try
+            {
+                DeleteFile(path + guid);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                throw new Exception("DeleteTask(" + guid + ")", ex);
+            }
+            return result;
+        }
     }
 }
