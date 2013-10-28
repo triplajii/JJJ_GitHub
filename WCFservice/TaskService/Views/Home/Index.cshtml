@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div id="phone" class="div">Phone</div>
+    <div id="tablet" class="div">Tablet</div>
+    <div id="desktop" class="div">Desktop</div>
+    <div id="reso" class="div">reso</div>
+
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            GetReso();
+        })
+        $(window).resize(function () {
+            GetReso();
+        })
+
+        function GetReso() {
+            $('#reso').text($(window).width() + ' x ' + $(window).height());
+        }
+    </script>
+</body>
+</html>

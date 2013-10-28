@@ -1,0 +1,37 @@
+﻿@media screen and (max-width: 800px){
+    body {
+        background-color: yellow;
+    }
+    img {   
+        visibility:hidden;
+    }
+    #phone {display:block;}
+    #tablet {display:none;}
+    #desktop {display:none;}
+}
+@media screen and (min-width: 800px){
+    body {
+        background-color: gray;
+    }
+    img {   
+        width:300px;
+        display: block;
+        margin: 0 auto;
+    }
+    #phone {display:none;}
+    #tablet {display:block;}
+    #desktop {display:none;}
+}
+@media screen and (min-width: 1200px){
+    body {
+        background-color: red;
+    }
+    img {   
+        width:900px;
+        display: block;
+        margin: 0 auto;
+    }
+    #phone {display:none;}
+    #tablet {display:none;}
+    #desktop {display:block;}
+}
